@@ -118,11 +118,13 @@ final class DefaultLegalEntityDiscountingMarketDataLookup
    * Obtains an instance based on maps for repo curves.
    * <p>
    * The repo curves are defined in two parts.
-   * The first part maps the issuer/security ID to a group, and the second part maps the
+   * The first part maps the issuer ID to a group, and the second part maps the
    * group and currency to the identifier of the curve.
+   * <p>
+   * Issuer curves are not defined in the instance.
    * 
-   * @param repoCurveGroups  the repo curve groups, mapping security or issuer ID to group
-   * @param repoCurveIds  the repo curve identifiers, keyed by security ID or issuer ID and currency
+   * @param repoCurveGroups  the repo curve groups, mapping issuer ID to group
+   * @param repoCurveIds  the repo curve identifiers, keyed by repo group and currency
    * @param obsSource  the source of market data for quotes and other observable market data
    * @return the rates lookup containing the specified curves
    */
