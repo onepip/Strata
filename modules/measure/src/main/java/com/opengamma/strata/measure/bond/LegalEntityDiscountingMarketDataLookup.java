@@ -115,6 +115,65 @@ public interface LegalEntityDiscountingMarketDataLookup extends CalculationParam
 
   //-------------------------------------------------------------------------
   /**
+   * Obtains an instance based on maps for repo curves.
+   * <p>
+   * The repo curves are defined in two parts.
+   * The first part maps the issuer/security ID to a group, and the second part maps the
+   * group and currency to the identifier of the curve.
+   * 
+   * @param repoCurveGroups  the repo curve groups, mapping security or issuer ID to group
+   * @param repoCurveIds  the repo curve identifiers, keyed by security ID or issuer ID and currency
+   * @return the rates lookup containing the specified curves
+   */
+  public static LegalEntityDiscountingMarketDataLookup of(
+      Map<StandardId, RepoGroup> repoCurveGroups,
+      Map<Pair<RepoGroup, Currency>, CurveId> repoCurveIds) {
+
+    return LegalEntityDiscountingMarketDataLookup.of(repoCurveGroups, repoCurveIds, ObservableSource.NONE);
+  }
+
+  /**
+   * Obtains an instance based on maps for repo curves.
+   * <p>
+   * The repo curves are defined in two parts.
+   * The first part maps the issuer/security ID to a group, and the second part maps the
+   * group and currency to the identifier of the curve.
+   * 
+   * @param repoCurveGroups  the repo curve groups, mapping security or issuer ID to group
+   * @param repoCurveIds  the repo curve identifiers, keyed by security ID or issuer ID and currency
+   * @param obsSource  the source of market data for quotes and other observable market data
+   * @return the rates lookup containing the specified curves
+   */
+  public static LegalEntityDiscountingMarketDataLookup of(
+      Map<StandardId, RepoGroup> repoCurveGroups,
+      Map<Pair<RepoGroup, Currency>, CurveId> repoCurveIds,
+      ObservableSource obsSource) {
+
+    return DefaultLegalEntityDiscountingMarketDataLookup.of(repoCurveGroups, repoCurveIds, obsSource);
+  }
+
+  /**
+   * Obtains an instance based on a curve group and group map.
+   * <p>
+   * The two maps define mapping from the issuer ID to a group.
+   * 
+   * @param curveGroup  the curve group to base the lookup on
+   * @param repoCurveGroups  the repo curve groups, mapping issuer ID to group
+   * @return the rates lookup containing the specified curves 
+   */
+  public static LegalEntityDiscountingMarketDataLookup of(
+      LegalEntityCurveGroup curveGroup,
+      Map<StandardId, RepoGroup> repoCurveGroups) {
+
+    CurveGroupName groupName = curveGroup.getName();
+    Map<Pair<RepoGroup, Currency>, CurveId> repoCurveIds = MapStream.of(curveGroup.getRepoCurves())
+        .mapValues(c -> CurveId.of(groupName, c.getName()))
+        .toMap();
+    return LegalEntityDiscountingMarketDataLookup.of(repoCurveGroups, repoCurveIds, ObservableSource.NONE);
+  }
+
+  //-------------------------------------------------------------------------
+  /**
    * Gets the type that the lookup will be queried by.
    * <p>
    * This returns {@code LegalEntityDiscountingMarketDataLookup.class}.
@@ -139,6 +198,16 @@ public interface LegalEntityDiscountingMarketDataLookup extends CalculationParam
    * @throws IllegalArgumentException if unable to create requirements
    */
   public abstract FunctionRequirements requirements(SecurityId securityId, StandardId issuerId, Currency currency);
+
+  /**
+   * Creates market data requirements for the specified issuer.
+   * 
+   * @param issuerId  the legal entity issuer ID
+   * @param currency  the currency of the security
+   * @return the requirements
+   * @throws IllegalArgumentException if unable to create requirements
+   */
+  public abstract FunctionRequirements requirements(StandardId issuerId, Currency currency);
 
   //-------------------------------------------------------------------------
   /**
