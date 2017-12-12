@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2017 - present by OpenGamma Inc. and the OpenGamma group of companies
+ *
+ * Please see distribution for license.
+ */
 package com.opengamma.strata.pricer.sensitivity;
 
 import static com.opengamma.strata.basics.currency.Currency.GBP;
@@ -41,7 +46,7 @@ import com.opengamma.strata.product.SecurityId;
 /**
  * Test {@link MarketQuoteSensitivityCalculator}.
  * <p>
- * Market quote sensitivity calculation with {@code RatesProvider}, {@code CreditRatesProvider} is tested in other unit tests, 
+ * Market quote sensitivity calculations with {@code RatesProvider}, {@code CreditRatesProvider} are tested in other unit tests, 
  * e.g., {@link CalibrationDiscountingSimpleEur3Test}, {@code SpreadSensitivityCalculatorTest}, together with curve calibrations.
  */
 @Test
